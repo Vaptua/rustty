@@ -142,6 +142,11 @@ impl Driver {
         Ok(())
     }
 
+    // Returns an Event corresponding to the contents of 'buf' for the current terminal,
+    // or None if the buffer contents doesn't correspond to a known event.
+    //
+    // If this function returns None, it could indicate that the particular escape sequence
+    // hasn't been implemented by this driver, or that the contents of `buf` is garbled.
     pub fn get_event(&self, buf: &String) -> Option<Event> {
         let mut iter = buf.chars();
         let first = iter.next().expect("got empty string");
@@ -149,6 +154,7 @@ impl Driver {
 
         if first == ESCAPE {
             if rest.is_empty() {
+                // Return the literal escape character
                 Some(Event::Char(first))
             } else {
                 self.escape_seq_map.get(buf).map(|r| *r)
