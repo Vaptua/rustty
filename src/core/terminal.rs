@@ -162,6 +162,9 @@ impl Terminal {
         // Switch to alternate screen buffer. Writes the control code to the output buffer.
         try!(terminal.outbuffer_write_devfn(DevFn::EnterCa));
 
+        // Put the terminal in transmit mode
+        try!(terminal.outbuffer_write_devfn(DevFn::EnterXmit));
+
         // Hide cursor. Writes the control code to the output buffer.
         try!(terminal.outbuffer_write_devfn(DevFn::HideCursor));
 
@@ -698,6 +701,7 @@ impl Drop for Terminal {
         self.outbuffer_write_devfn(DevFn::ShowCursor).unwrap();
         self.outbuffer_write_devfn(DevFn::Reset).unwrap();
         self.outbuffer_write_devfn(DevFn::Clear).unwrap();
+        self.outbuffer_write_devfn(DevFn::ExitXmit).unwrap();
         self.outbuffer_write_devfn(DevFn::ExitCa).unwrap();
         self.flush().unwrap();
         self.termctl.reset().unwrap();

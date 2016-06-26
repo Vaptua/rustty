@@ -1,7 +1,8 @@
 // Temporary fix before certain constants are used.
 #![allow(dead_code)]
 
-use term::Error;
+use std::io::{Error, ErrorKind};
+
 use term::terminfo::TermInfo;
 use term::terminfo::parm;
 use term::terminfo::parm::{Param, Variables};
@@ -38,6 +39,8 @@ const KEYS: &'static [(Event, &'static str, &'static str)] = &[
 // String constants correspond to terminfo capnames and are used inside the module for convenience.
 const ENTER_CA: &'static str = "smcup";
 const EXIT_CA: &'static str = "rmcup";
+const ENTER_XMIT: &'static str = "smkx";
+const EXIT_XMIT: &'static str = "rmkx";
 const SHOW_CURSOR: &'static str = "cnorm";
 const HIDE_CURSOR: &'static str = "civis";
 const SET_CURSOR: &'static str = "cup";
@@ -58,6 +61,8 @@ const SETBG: &'static str = "setab";
 pub enum DevFn {
     EnterCa,
     ExitCa,
+    EnterXmit,
+    ExitXmit,
     ShowCursor,
     HideCursor,
     SetCursor(usize, usize),
@@ -76,6 +81,8 @@ impl DevFn {
         match *self {
             DevFn::EnterCa => ENTER_CA,
             DevFn::ExitCa => EXIT_CA,
+            DevFn::EnterXmit => ENTER_XMIT,
+            DevFn::ExitXmit => EXIT_XMIT,
             DevFn::ShowCursor => SHOW_CURSOR,
             DevFn::HideCursor => HIDE_CURSOR,
             DevFn::SetCursor(..) => SET_CURSOR,
